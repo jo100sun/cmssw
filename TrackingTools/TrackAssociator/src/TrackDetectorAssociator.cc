@@ -39,6 +39,7 @@
 #include "DataFormats/CSCRecHit/interface/CSCSegmentCollection.h"
 #include "DataFormats/GEMRecHit/interface/GEMSegmentCollection.h"
 #include "DataFormats/GEMRecHit/interface/ME0SegmentCollection.h"
+#include "Geometry/GEMGeometry/interface/GEMEtaPartitionSpecs.h"
 
 // calorimeter and muon infos
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
@@ -665,7 +666,43 @@ void TrackDetectorAssociator::getTAMuonChamberMatches(std::vector<TAMuonChamberM
       float halfWidthAtYPrime = 0.5f * narrowWidth + yPrime * tangent;
       distanceX = std::abs(localPoint.x()) - halfWidthAtYPrime;
       distanceY = std::abs(localPoint.y() - yCOWPOffset) - 0.5f * length;
-    } else {
+    } else if (const GEMChamber* gemchamber = dynamic_cast<const GEMChamber*>(geomDet)) {
+      const std::vector<const GEMEtaPartition*>& gemetapartition = gemchamber->etaPartitions();
+      if (gemetapartition.size()==0) {
+        LogTrace("TrackAssociator") << "Failed to get GEMEtaPartition from GEMChamber; moving on\n";
+        continue;
+      }
+
+      const GEMEtaPartitionSpecs* gemchamberspecsbottom = gemetapartition[0]->specs();
+      if (!gemchamberspecsbottom) {
+        LogTrace("TrackAssociator") << "Failed to get GEMEtaPartitionSpecs from GEMEtaPartition; moving on\n";
+        continue;
+      }
+      
+      const std::vector<float>& _p_bottom = gemchamberspecsbottom->parameters();
+      
+      const GEMEtaPartitionSpecs* gemchamberspecstop = gemetapartition.back()->specs();
+      if (!gemchamberspecstop) {
+        LogTrace("TrackAssociator") << "Failed to get GEMEtaPartitionSpecs from GEMEtaPartition; moving on\n";
+        continue;
+      }
+      
+      const std::vector<float>& _p_top = gemchamberspecstop->parameters();
+
+      float halfnarrowWidth = _p_top[0];
+      float halfwideWidth = _p_bottom[1];
+      float halflength=0;
+      for (long unsigned int i=0;i < gemetapartition.size();i++){
+        const GEMEtaPartitionSpecs* gemetaspecs  = gemetapartition[i]->specs();
+        const std::vector<float>& _p = gemetaspecs->parameters();
+        halflength+=_p[2];
+      }
+      float tangent = (halfwideWidth - halfnarrowWidth) / (2.f * halflength);
+      float halfWidthAtY = tangent * localPoint.y() + halfnarrowWidth;
+
+      distanceX = std::abs(localPoint.x()) - halfWidthAtY;
+      distanceY = std::abs(localPoint.y()) - halflength; // assuming the localpoint.y() is zero at the center of the detector.
+    }  else {
       distanceX = std::abs(localPoint.x()) - 0.5f * geomDet->surface().bounds().width();
       distanceY = std::abs(localPoint.y()) - 0.5f * geomDet->surface().bounds().length();
     }
