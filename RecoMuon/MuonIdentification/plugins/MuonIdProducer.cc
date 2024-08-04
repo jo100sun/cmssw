@@ -1109,13 +1109,7 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
       for (const auto& gemRecHit : *gemHitHandle_) {
         reco::MuonGEMHitMatch gemHitMatch;
 
-        if (GEMDetId(gemRecHit.gemId().region(),
-                     gemRecHit.gemId().ring(),
-                     gemRecHit.gemId().station(),
-                     gemRecHit.gemId().layer(),
-                     gemRecHit.gemId().chamber(),
-                     0)
-                .rawId() != chamber.id.rawId())
+        if (gemRecHit.gemId().rawId() != chamber.id.rawId())
           continue;
 
         gemHitMatch.x = gemRecHit.localPosition().x();
