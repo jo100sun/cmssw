@@ -1121,7 +1121,7 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
         gemHitMatch.x = gemRecHit.localPosition().x();
         gemHitMatch.mask = 0;
         gemHitMatch.bx = gemRecHit.BunchX();
-        gemHitMatch.theGEMId = gemRecHit.gemId().ieta();
+        gemHitMatch.ieta = gemRecHit.gemId().ieta();
 
         const double absDx = std::abs(gemRecHit.localPosition().x() - chamber.tState.localPosition().x());
         if (absDx <= 5 or absDx * absDx <= 16 * localError.xx())
