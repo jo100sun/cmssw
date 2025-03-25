@@ -166,6 +166,8 @@ MuonIdProducer::MuonIdProducer(const edm::ParameterSet& iConfig)
   //create mesh holder
   meshAlgo_ = std::make_unique<MuonMesh>(iConfig.getParameter<edm::ParameterSet>("arbitrationCleanerOptions"));
 
+  geomToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
+  GEM_edgecut = iConfig.getParameter<double>("GEM_edgecut");
   edm::InputTag rpcHitTag("rpcRecHits");
   rpcHitToken_ = consumes<RPCRecHitCollection>(rpcHitTag);
 
@@ -274,6 +276,7 @@ void MuonIdProducer::init(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     iEvent.getByToken(glbQualToken_, glbQualHandle_);
   if (selectHighPurity_)
     iEvent.getByToken(pvToken_, pvHandle_);
+  gemgeom = &iSetup.getData(geomToken_);
 }
 
 reco::Muon MuonIdProducer::makeMuon(edm::Event& iEvent,
@@ -435,6 +438,24 @@ int MuonIdProducer::overlap(const reco::Muon& muon, const reco::Track& track) {
     }
   }
   return numberOfCommonDetIds;
+}
+
+bool MuonIdProducer::checkBounds(const GeomDet* geomDet,
+                                       const GlobalPoint& global_position,
+                                       const float bordercut) {
+  const TrapezoidalPlaneBounds* bounds = dynamic_cast<const TrapezoidalPlaneBounds*>(&geomDet->surface().bounds());
+  LocalPoint localPoint = geomDet->surface().toLocal(global_position);
+  float wideWidth = bounds->width();
+  float narrowWidth = 2.f * bounds->widthAtHalfLength() - wideWidth;
+  float length = bounds->length();
+  float tangent = (wideWidth - narrowWidth) / (2.f * length);
+  float halfWidthAtY = tangent * localPoint.y() + 0.25f * (narrowWidth + wideWidth);
+  float distanceY = std::abs(localPoint.y()) - 0.5f * length;
+  float distanceX = std::abs(localPoint.x()) - halfWidthAtY;
+  if (distanceX < bordercut && distanceY < bordercut) {
+    return true;
+  }
+  return false;
 }
 
 void MuonIdProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) {
@@ -1123,8 +1144,23 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
         gemHitMatch.bx = gemRecHit.BunchX();
         gemHitMatch.ieta = gemRecHit.gemId().ieta();
 
+        const GeomDet* geomDet = gemgeom->idToDetUnit(chamber.id);
+        const GlobalPoint& global_position = geomDet->toGlobal(lPos);
+        bool GEMmatched = false;
+        int ieta = 0;
+        if (const GEMChamber* gemChamber = dynamic_cast<const GEMChamber*>(geomDet)) {
+          for (const GEMEtaPartition* eta_partition : gemChamber->etaPartitions()) {
+            ieta = eta_partition->id().ieta();
+            if (ieta == gemHitMatch.ieta) {
+              if (checkBounds(eta_partition, global_position, GEM_edgecut)) {
+                GEMmatched = true;
+              }
+            }
+          }
+        }
+
         const double absDx = std::abs(gemRecHit.localPosition().x() - chamber.tState.localPosition().x());
-        if (absDx <= 5 or absDx * absDx <= 16 * localError.xx())
+        if ((absDx <= 5 or absDx * absDx <= 16 * localError.xx()) && GEMmatched)
           matchedChamber.gemHitMatches.push_back(gemHitMatch);
       }
 

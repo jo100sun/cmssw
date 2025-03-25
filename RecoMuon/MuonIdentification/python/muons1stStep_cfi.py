@@ -91,7 +91,9 @@ muons1stStep = cms.EDProducer("MuonIdProducer",
     ),
 
     # tracker muon arbitration
-    arbitrateTrackerMuons = cms.bool(True)
+    arbitrateTrackerMuons = cms.bool(True),
+    # Toleration amount of error in GEM etapartition matching between track and rechit
+    GEM_edgecut = cms.double(2.0)
 )
 
 from Configuration.Eras.Modifier_run3_GEM_cff import run3_GEM

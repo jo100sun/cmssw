@@ -61,6 +61,7 @@
 #include "RecoMuon/MuonIdentification/interface/MuonIdTruthInfo.h"
 #include "RecoMuon/MuonIdentification/interface/MuonArbitrationMethods.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 
 class MuonMesh;
 class MuonKinkFinder;
@@ -79,7 +80,7 @@ public:
   static double sectorPhi(const DetId& id);
 
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
+  bool checkBounds(const GeomDet* geomDet, const GlobalPoint& global_position, const float bordercut);
 private:
   void fillMuonId(edm::Event&,
                   const edm::EventSetup&,
@@ -281,5 +282,8 @@ private:
 
   bool arbClean_;
   std::unique_ptr<MuonMesh> meshAlgo_;
+  edm::ESGetToken<GEMGeometry, MuonGeometryRecord> geomToken_;
+  const GEMGeometry* gemgeom;
+  double GEM_edgecut;
 };
 #endif
