@@ -44,6 +44,7 @@ MuonIdProducer::MuonIdProducer(const edm::ParameterSet& iConfig)
 
   minPt_ = iConfig.getParameter<double>("minPt");
   minP_ = iConfig.getParameter<double>("minP");
+  //GEM_edgecut_ = iConfig.getParameter<double>("gem_edgecut");
   minPCaloMuon_ = iConfig.getParameter<double>("minPCaloMuon");
   minNumberOfMatches_ = iConfig.getParameter<int>("minNumberOfMatches");
   addExtraSoftMuons_ = iConfig.getParameter<bool>("addExtraSoftMuons");
@@ -167,7 +168,6 @@ MuonIdProducer::MuonIdProducer(const edm::ParameterSet& iConfig)
   meshAlgo_ = std::make_unique<MuonMesh>(iConfig.getParameter<edm::ParameterSet>("arbitrationCleanerOptions"));
 
   geomToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
-  GEM_edgecut = iConfig.getParameter<double>("GEM_edgecut");
   edm::InputTag rpcHitTag("rpcRecHits");
   rpcHitToken_ = consumes<RPCRecHitCollection>(rpcHitTag);
 
@@ -611,6 +611,10 @@ void MuonIdProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
         const bool goodRPCMuon = isGoodRPCMuon(trackerMuon);
         const bool goodGEMMuon = isGoodGEMMuon(trackerMuon);
         const bool goodME0Muon = isGoodME0Muon(trackerMuon);
+        if (goodTrackerMuon)
+          std::cout << "TrackerMuon Count +1" << std::endl;
+        if (goodGEMMuon)
+          std::cout << "GEMMuon Count +1" << std::endl;
         if (goodTrackerMuon)
           trackerMuon.setType(trackerMuon.type() | reco::Muon::TrackerMuon);
         if (goodRPCMuon)
@@ -1152,15 +1156,20 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
           for (const GEMEtaPartition* eta_partition : gemChamber->etaPartitions()) {
             ieta = eta_partition->id().ieta();
             if (ieta == gemHitMatch.ieta) {
-              if (checkBounds(eta_partition, global_position, GEM_edgecut)) {
+              if (checkBounds(eta_partition, global_position, 2)) {
                 GEMmatched = true;
               }
             }
           }
         }
-
+        // etawise 매칭이 적용되지 않은경우
+        // 매칭 cut 변화시키며 Valid/inValid 비율 확인 - PU 사용하기
         const double absDx = std::abs(gemRecHit.localPosition().x() - chamber.tState.localPosition().x());
-        if ((absDx <= 5 or absDx * absDx <= 16 * localError.xx()) && GEMmatched)
+        if ((absDx <= 5 or absDx * absDx <= 16 * localError.xx()) && GEMmatched){
+          std::cout << "absDx: " << absDx << std::endl;
+          std::cout << "GEMmatched: " << GEMmatched << std::endl;
+          std::cout << "track.id: " << aMuon.track().id() << std::endl;
+        }
           matchedChamber.gemHitMatches.push_back(gemHitMatch);
       }
 

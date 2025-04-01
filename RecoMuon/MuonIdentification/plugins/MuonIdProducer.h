@@ -284,6 +284,6 @@ private:
   std::unique_ptr<MuonMesh> meshAlgo_;
   edm::ESGetToken<GEMGeometry, MuonGeometryRecord> geomToken_;
   const GEMGeometry* gemgeom;
-  double GEM_edgecut;
+  double GEM_edgecut_;
 };
 #endif

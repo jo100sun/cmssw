@@ -25,13 +25,13 @@ muons1stStep = cms.EDProducer("MuonIdProducer",
 
     fillEnergy = cms.bool(True),
     storeCrossedHcalRecHits = cms.bool(True),
-
     # OR
     maxAbsPullX = cms.double(3.0),
     maxAbsEta = cms.double(3.0),
 
     # Selection parameters
     minPt = cms.double(0.5),
+    gem_edgecut = cms.double(2.0),
     inputCollectionTypes = cms.vstring('inner tracks', 
                                        'links', 
                                        'outer tracks',
@@ -93,7 +93,6 @@ muons1stStep = cms.EDProducer("MuonIdProducer",
     # tracker muon arbitration
     arbitrateTrackerMuons = cms.bool(True),
     # Toleration amount of error in GEM etapartition matching between track and rechit
-    GEM_edgecut = cms.double(2.0)
 )
 
 from Configuration.Eras.Modifier_run3_GEM_cff import run3_GEM
