@@ -31,6 +31,9 @@
 #include "RecoMuon/MuonIdentification/interface/MuonMesh.h"
 #include "RecoMuon/MuonIdentification/interface/MuonKinkFinder.h"
 
+#include "Geometry/GEMGeometry/interface/ME0Chamber.h"
+#include "Geometry/GEMGeometry/interface/ME0EtaPartition.h"
+
 MuonIdProducer::MuonIdProducer(const edm::ParameterSet& iConfig)
     : geomTokenRun_(esConsumes<edm::Transition::BeginRun>()),
       propagatorToken_(esConsumes(edm::ESInputTag("", "SteppingHelixPropagatorAny"))) {
@@ -612,10 +615,6 @@ void MuonIdProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
         const bool goodGEMMuon = isGoodGEMMuon(trackerMuon);
         const bool goodME0Muon = isGoodME0Muon(trackerMuon);
         if (goodTrackerMuon)
-          std::cout << "TrackerMuon Count +1" << std::endl;
-        if (goodGEMMuon)
-          std::cout << "GEMMuon Count +1" << std::endl;
-        if (goodTrackerMuon)
           trackerMuon.setType(trackerMuon.type() | reco::Muon::TrackerMuon);
         if (goodRPCMuon)
           trackerMuon.setType(trackerMuon.type() | reco::Muon::RPCMuon);
@@ -1035,8 +1034,29 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
           matchedY = true;
       }
       if (matchedX && matchedY) {
-        if (matchedChamber.id.subdetId() == MuonSubdetId::ME0)
-          matchedChamber.me0Matches.push_back(matchedSegment);
+        if (matchedChamber.id.subdetId() == MuonSubdetId::ME0){
+          const GeomDet* geomDet = gemgeom->idToDetUnit(chamber.id);
+          const GlobalPoint& global_position = geomDet->toGlobal(lPos);
+          bool ietacheck = false;
+          const GlobalPoint& segment_global_position = GlobalPoint(
+            segment.segmentGlobalPosition.x(),
+            segment.segmentGlobalPosition.y(),
+            segment.segmentGlobalPosition.z()
+          );
+          if (const ME0Chamber* me0Chamber = dynamic_cast<const ME0Chamber*>(geomDet)) {
+            for (const ME0EtaPartition* eta_partition : me0Chamber->etaPartitions()) {
+              bool ieta = checkBounds(eta_partition, segment_global_position, 0);
+              if (ieta) {
+                if (checkBounds(eta_partition, global_position, 2)) {
+                  ietacheck = true;
+                }
+              }
+            }
+          }
+          if (ietacheck) {
+            matchedChamber.me0Matches.push_back(matchedSegment);
+          }
+        }
         else if (matchedChamber.id.subdetId() == MuonSubdetId::GEM)
           matchedChamber.gemMatches.push_back(matchedSegment);
         else
@@ -1146,7 +1166,6 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
         gemHitMatch.x = gemRecHit.localPosition().x();
         gemHitMatch.mask = 0;
         gemHitMatch.bx = gemRecHit.BunchX();
-        gemHitMatch.ieta = gemRecHit.gemId().ieta();
 
         const GeomDet* geomDet = gemgeom->idToDetUnit(chamber.id);
         const GlobalPoint& global_position = geomDet->toGlobal(lPos);
@@ -1155,7 +1174,7 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
         if (const GEMChamber* gemChamber = dynamic_cast<const GEMChamber*>(geomDet)) {
           for (const GEMEtaPartition* eta_partition : gemChamber->etaPartitions()) {
             ieta = eta_partition->id().ieta();
-            if (ieta == gemHitMatch.ieta) {
+            if (ieta == gemRecHit.gemId().ieta()) {
               if (checkBounds(eta_partition, global_position, 2)) {
                 GEMmatched = true;
               }
@@ -1166,11 +1185,8 @@ void MuonIdProducer::fillMuonId(edm::Event& iEvent,
         // 매칭 cut 변화시키며 Valid/inValid 비율 확인 - PU 사용하기
         const double absDx = std::abs(gemRecHit.localPosition().x() - chamber.tState.localPosition().x());
         if ((absDx <= 5 or absDx * absDx <= 16 * localError.xx()) && GEMmatched){
-          std::cout << "absDx: " << absDx << std::endl;
-          std::cout << "GEMmatched: " << GEMmatched << std::endl;
-          std::cout << "track.id: " << aMuon.track().id() << std::endl;
-        }
           matchedChamber.gemHitMatches.push_back(gemHitMatch);
+        }
       }
 
       muonChamberMatches.push_back(matchedChamber);

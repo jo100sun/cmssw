@@ -36,7 +36,6 @@ public:
                                 uint64_t& errors,
                                 uint64_t& warnings);
   bool checkBounds(const GeomDet* geomDet, const GlobalPoint& global_position, const float bordercut);
-  bool checkEta(const reco::MuonGEMHitMatch gemHit, const int ieta, const GEMDetId& gem_id);
   /// Destructor
   ~GEMTnPEfficiencyTask() override;
 
@@ -141,21 +140,21 @@ void GEMTnPEfficiencyTask::bookHistograms(DQMStore::IBooker& iBooker,
   MonitorElement* me_GE21_fail_chamber_1D =
       iBooker.book1D("GE21_nFailingProbe_chamber_1D", "GE21_nFailingProbe_chamber_1D", 18, 1, 19);
   MonitorElement* me_GEM_pass_chamber_p1_1D =
-      iBooker.book1D("GEM_nPassingProbe_chamber_p1_1D", "GEM_nPassingProbe_chamber_p1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_chamber_P-L1_1D", "GEM_nPassingProbe_chamber_P-L1_1D", 36, 1, 37);
   MonitorElement* me_GEM_fail_chamber_p1_1D =
-      iBooker.book1D("GEM_nFailingProbe_chamber_p1_1D", "GEM_nFailingProbe_chamber_p1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_chamber_P-L1_1D", "GEM_nFailingProbe_chamber_P-L1_1D", 36, 1, 37);
   MonitorElement* me_GEM_pass_chamber_p2_1D =
-      iBooker.book1D("GEM_nPassingProbe_chamber_p2_1D", "GEM_nPassingProbe_chamber_p2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_chamber_P-L2_1D", "GEM_nPassingProbe_chamber_P-L2_1D", 36, 1, 37);
   MonitorElement* me_GEM_fail_chamber_p2_1D =
-      iBooker.book1D("GEM_nFailingProbe_chamber_p2_1D", "GEM_nFailingProbe_chamber_p2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_chamber_P-L2_1D", "GEM_nFailingProbe_chamber_P-L2_1D", 36, 1, 37);
   MonitorElement* me_GEM_pass_chamber_n1_1D =
-      iBooker.book1D("GEM_nPassingProbe_chamber_n1_1D", "GEM_nPassingProbe_chamber_n1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_chamber_M-L1_1D", "GEM_nPassingProbe_chamber_M-L1_1D", 36, 1, 37);
   MonitorElement* me_GEM_fail_chamber_n1_1D =
-      iBooker.book1D("GEM_nFailingProbe_chamber_n1_1D", "GEM_nFailingProbe_chamber_n1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_chamber_M-L1_1D", "GEM_nFailingProbe_chamber_M-L1_1D", 36, 1, 37);
   MonitorElement* me_GEM_pass_chamber_n2_1D =
-      iBooker.book1D("GEM_nPassingProbe_chamber_n2_1D", "GEM_nPassingProbe_chamber_n2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_chamber_M-L2_1D", "GEM_nPassingProbe_chamber_M-L2_1D", 36, 1, 37);
   MonitorElement* me_GEM_fail_chamber_n2_1D =
-      iBooker.book1D("GEM_nFailingProbe_chamber_n2_1D", "GEM_nFailingProbe_chamber_n2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_chamber_M-L2_1D", "GEM_nFailingProbe_chamber_M-L2_1D", 36, 1, 37);
   //
   MonitorElement* me_GEM_pass_pt_1D = iBooker.book1D("GEM_nPassingProbe_pt_1D", "GEM_nPassingProbe_pt_1D", 20, 0, 100);
   MonitorElement* me_GEM_fail_pt_1D = iBooker.book1D("GEM_nFailingProbe_pt_1D", "GEM_nFailingProbe_pt_1D", 20, 0, 100);
@@ -169,69 +168,69 @@ void GEMTnPEfficiencyTask::bookHistograms(DQMStore::IBooker& iBooker,
       iBooker.book1D("GEM_nFailingProbe_phi_1D", "GEM_nFailingProbe_phi_1D", 20, -TMath::Pi(), TMath::Pi());
   ///
   MonitorElement* me_GEM_pass_pt_p1_1D =
-      iBooker.book1D("GEM_nPassingProbe_pt_p1_1D", "GEM_nPassingProbe_pt_p1_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nPassingProbe_pt_P-L1_1D", "GEM_nPassingProbe_pt_P-L1_1D", 20, 0, 100);
   MonitorElement* me_GEM_fail_pt_p1_1D =
-      iBooker.book1D("GEM_nFailingProbe_pt_p1_1D", "GEM_nFailingProbe_pt_p1_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nFailingProbe_pt_P-L1_1D", "GEM_nFailingProbe_pt_P-L1_1D", 20, 0, 100);
   MonitorElement* me_GEM_pass_eta_p1_1D =
-      iBooker.book1D("GEM_nPassingProbe_eta_p1_1D", "GEM_nPassingProbe_eta_p1_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nPassingProbe_eta_P-L1_1D", "GEM_nPassingProbe_eta_P-L1_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_fail_eta_p1_1D =
-      iBooker.book1D("GEM_nFailingProbe_eta_p1_1D", "GEM_nFailingProbe_eta_p1_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nFailingProbe_eta_P-L1_1D", "GEM_nFailingProbe_eta_P-L1_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_pass_phi_p1_1D =
-      iBooker.book1D("GEM_nPassingProbe_phi_p1_1D", "GEM_nPassingProbe_phi_p1_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nPassingProbe_phi_P-L1_1D", "GEM_nPassingProbe_phi_P-L1_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_fail_phi_p1_1D =
-      iBooker.book1D("GEM_nFailingProbe_phi_p1_1D", "GEM_nFailingProbe_phi_p1_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nFailingProbe_phi_P-L1_1D", "GEM_nFailingProbe_phi_P-L1_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_pass_pt_p2_1D =
-      iBooker.book1D("GEM_nPassingProbe_pt_p2_1D", "GEM_nPassingProbe_pt_p2_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nPassingProbe_pt_P-L2_1D", "GEM_nPassingProbe_pt_P-L2_1D", 20, 0, 100);
   MonitorElement* me_GEM_fail_pt_p2_1D =
-      iBooker.book1D("GEM_nFailingProbe_pt_p2_1D", "GEM_nFailingProbe_pt_p2_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nFailingProbe_pt_P-L2_1D", "GEM_nFailingProbe_pt_P-L2_1D", 20, 0, 100);
   MonitorElement* me_GEM_pass_eta_p2_1D =
-      iBooker.book1D("GEM_nPassingProbe_eta_p2_1D", "GEM_nPassingProbe_eta_p2_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nPassingProbe_eta_P-L2_1D", "GEM_nPassingProbe_eta_P-L2_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_fail_eta_p2_1D =
-      iBooker.book1D("GEM_nFailingProbe_eta_p2_1D", "GEM_nFailingProbe_eta_p2_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nFailingProbe_eta_P-L2_1D", "GEM_nFailingProbe_eta_P-L2_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_pass_phi_p2_1D =
-      iBooker.book1D("GEM_nPassingProbe_phi_p2_1D", "GEM_nPassingProbe_phi_p2_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nPassingProbe_phi_P-L2_1D", "GEM_nPassingProbe_phi_P-L2_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_fail_phi_p2_1D =
-      iBooker.book1D("GEM_nFailingProbe_phi_p2_1D", "GEM_nFailingProbe_phi_p2_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nFailingProbe_phi_P-L2_1D", "GEM_nFailingProbe_phi_P-L2_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_pass_pt_n1_1D =
-      iBooker.book1D("GEM_nPassingProbe_pt_n1_1D", "GEM_nPassingProbe_pt_n1_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nPassingProbe_pt_M-L1_1D", "GEM_nPassingProbe_pt_M-L1_1D", 20, 0, 100);
   MonitorElement* me_GEM_fail_pt_n1_1D =
-      iBooker.book1D("GEM_nFailingProbe_pt_n1_1D", "GEM_nFailingProbe_pt_n1_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nFailingProbe_pt_M-L1_1D", "GEM_nFailingProbe_pt_M-L1_1D", 20, 0, 100);
   MonitorElement* me_GEM_pass_eta_n1_1D =
-      iBooker.book1D("GEM_nPassingProbe_eta_n1_1D", "GEM_nPassingProbe_eta_n1_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nPassingProbe_eta_M-L1_1D", "GEM_nPassingProbe_eta_M-L1_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_fail_eta_n1_1D =
-      iBooker.book1D("GEM_nFailingProbe_eta_n1_1D", "GEM_nFailingProbe_eta_n1_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nFailingProbe_eta_M-L1_1D", "GEM_nFailingProbe_eta_M-L1_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_pass_phi_n1_1D =
-      iBooker.book1D("GEM_nPassingProbe_phi_n1_1D", "GEM_nPassingProbe_phi_n1_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nPassingProbe_phi_M-L1_1D", "GEM_nPassingProbe_phi_M-L1_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_fail_phi_n1_1D =
-      iBooker.book1D("GEM_nFailingProbe_phi_n1_1D", "GEM_nFailingProbe_phi_n1_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nFailingProbe_phi_M-L1_1D", "GEM_nFailingProbe_phi_M-L1_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_pass_pt_n2_1D =
-      iBooker.book1D("GEM_nPassingProbe_pt_n2_1D", "GEM_nPassingProbe_pt_n2_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nPassingProbe_pt_M-L2_1D", "GEM_nPassingProbe_pt_M-L2_1D", 20, 0, 100);
   MonitorElement* me_GEM_fail_pt_n2_1D =
-      iBooker.book1D("GEM_nFailingProbe_pt_n2_1D", "GEM_nFailingProbe_pt_n2_1D", 20, 0, 100);
+      iBooker.book1D("GEM_nFailingProbe_pt_M-L2_1D", "GEM_nFailingProbe_pt_M-L2_1D", 20, 0, 100);
   MonitorElement* me_GEM_pass_eta_n2_1D =
-      iBooker.book1D("GEM_nPassingProbe_eta_n2_1D", "GEM_nPassingProbe_eta_n2_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nPassingProbe_eta_M-L2_1D", "GEM_nPassingProbe_eta_M-L2_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_fail_eta_n2_1D =
-      iBooker.book1D("GEM_nFailingProbe_eta_n2_1D", "GEM_nFailingProbe_eta_n2_1D", 24, 0, 2.4);
+      iBooker.book1D("GEM_nFailingProbe_eta_M-L2_1D", "GEM_nFailingProbe_eta_M-L2_1D", 24, 0, 2.4);
   MonitorElement* me_GEM_pass_phi_n2_1D =
-      iBooker.book1D("GEM_nPassingProbe_phi_n2_1D", "GEM_nPassingProbe_phi_n2_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nPassingProbe_phi_M-L2_1D", "GEM_nPassingProbe_phi_M-L2_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GEM_fail_phi_n2_1D =
-      iBooker.book1D("GEM_nFailingProbe_phi_n2_1D", "GEM_nFailingProbe_phi_n2_1D", 20, -TMath::Pi(), TMath::Pi());
+      iBooker.book1D("GEM_nFailingProbe_phi_M-L2_1D", "GEM_nFailingProbe_phi_M-L2_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* me_GE11_pass_Ch_ieta_p1 =
-      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_p1", "GE11_nPassingProbe_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_P-L1", "GE11_nPassingProbe_Ch_ieta_P-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_fail_Ch_ieta_p1 =
-      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_p1", "GE11_nFailingProbe_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_P-L1", "GE11_nFailingProbe_Ch_ieta_P-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_pass_Ch_ieta_p2 =
-      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_p2", "GE11_nPassingProbe_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_P-L2", "GE11_nPassingProbe_Ch_ieta_P-L2", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_fail_Ch_ieta_p2 =
-      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_p2", "GE11_nFailingProbe_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_P-L2", "GE11_nFailingProbe_Ch_ieta_P-L2", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_pass_Ch_ieta_n1 =
-      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_n1", "GE11_nPassingProbe_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_M-L1", "GE11_nPassingProbe_Ch_ieta_M-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_fail_Ch_ieta_n1 =
-      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_n1", "GE11_nFailingProbe_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_M-L1", "GE11_nFailingProbe_Ch_ieta_M-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_pass_Ch_ieta_n2 =
-      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_n2", "GE11_nPassingProbe_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nPassingProbe_Ch_ieta_M-L2", "GE11_nPassingProbe_Ch_ieta_M-L2", 8, 1, 9, 36, 1, 37);
   MonitorElement* me_GE11_fail_Ch_ieta_n2 =
-      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_n2", "GE11_nFailingProbe_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
+      iBooker.book2D("GE11_nFailingProbe_Ch_ieta_M-L2", "GE11_nFailingProbe_Ch_ieta_M-L2", 8, 1, 9, 36, 1, 37);
 
   ////
   MonitorElement* me_ME0_pass_chamber_1D =
@@ -242,351 +241,6 @@ void GEMTnPEfficiencyTask::bookHistograms(DQMStore::IBooker& iBooker,
       "GEM_nPassingProbe_Ch_region_layer_phase2", "GEM_nPassingProbe_Ch_region_layer_phase2", 10, 0, 10, 36, 1, 37);
   MonitorElement* me_GEM_fail_Ch_region_layer_phase2 = iBooker.book2D(
       "GEM_nFailingProbe_Ch_region_layer_phase2", "GEM_nFailingProbe_Ch_region_layer_phase2", 10, 0, 10, 36, 1, 37);
-  // Bad VFAT Mask + Empty OH Mask
-  MonitorElement* OHmissing_me_GE11_pass_allCh_1D =
-      iBooker.book1D("GE11_nPassingProbe_OHmissing_allCh_1D", "GE11_nPassingProbe_OHmissing_allCh_1D", 2, -1.5, 1.5);
-  MonitorElement* OHmissing_me_GE11_fail_allCh_1D =
-      iBooker.book1D("GE11_nFailingProbe_OHmissing_allCh_1D", "GE11_nFailingProbe_OHmissing_allCh_1D", 2, -1.5, 1.5);
-  MonitorElement* OHmissing_me_GEM_pass_chamber_p1_1D = iBooker.book1D(
-      "GEM_nPassingProbe_OHmissing_chamber_p1_1D", "GEM_nPassingProbe_OHmissing_chamber_p1_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_fail_chamber_p1_1D = iBooker.book1D(
-      "GEM_nFailingProbe_OHmissing_chamber_p1_1D", "GEM_nFailingProbe_OHmissing_chamber_p1_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_pass_chamber_p2_1D = iBooker.book1D(
-      "GEM_nPassingProbe_OHmissing_chamber_p2_1D", "GEM_nPassingProbe_OHmissing_chamber_p2_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_fail_chamber_p2_1D = iBooker.book1D(
-      "GEM_nFailingProbe_OHmissing_chamber_p2_1D", "GEM_nFailingProbe_OHmissing_chamber_p2_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_pass_chamber_n1_1D = iBooker.book1D(
-      "GEM_nPassingProbe_OHmissing_chamber_n1_1D", "GEM_nPassingProbe_OHmissing_chamber_n1_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_fail_chamber_n1_1D = iBooker.book1D(
-      "GEM_nFailingProbe_OHmissing_chamber_n1_1D", "GEM_nFailingProbe_OHmissing_chamber_n1_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_pass_chamber_n2_1D = iBooker.book1D(
-      "GEM_nPassingProbe_OHmissing_chamber_n2_1D", "GEM_nPassingProbe_OHmissing_chamber_n2_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_fail_chamber_n2_1D = iBooker.book1D(
-      "GEM_nFailingProbe_OHmissing_chamber_n2_1D", "GEM_nFailingProbe_OHmissing_chamber_n2_1D", 36, 1, 37);
-  MonitorElement* OHmissing_me_GEM_pass_pt_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHmissing_pt_1D", "GEM_nPassingProbe_OHmissing_pt_1D", 20, 0, 100);
-  MonitorElement* OHmissing_me_GEM_fail_pt_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHmissing_pt_1D", "GEM_nFailingProbe_OHmissing_pt_1D", 20, 0, 100);
-  MonitorElement* OHmissing_me_GEM_pass_eta_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHmissing_eta_1D", "GEM_nPassingProbe_OHmissing_eta_1D", 24, 0, 2.4);
-  MonitorElement* OHmissing_me_GEM_fail_eta_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHmissing_eta_1D", "GEM_nFailingProbe_OHmissing_eta_1D", 24, 0, 2.4);
-  MonitorElement* OHmissing_me_GEM_pass_phi_1D = iBooker.book1D(
-      "GEM_nPassingProbe_OHmissing_phi_1D", "GEM_nPassingProbe_OHmissing_phi_1D", 20, -TMath::Pi(), TMath::Pi());
-  MonitorElement* OHmissing_me_GEM_fail_phi_1D = iBooker.book1D(
-      "GEM_nFailingProbe_OHmissing_phi_1D", "GEM_nFailingProbe_OHmissing_phi_1D", 20, -TMath::Pi(), TMath::Pi());
-  MonitorElement* OHmissing_me_GE11_pass_Ch_ieta_p1 = iBooker.book2D(
-      "GE11_nPassingProbe_OHmissing_Ch_ieta_p1", "GE11_nPassingProbe_OHmissing_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_fail_Ch_ieta_p1 = iBooker.book2D(
-      "GE11_nFailingProbe_OHmissing_Ch_ieta_p1", "GE11_nFailingProbe_OHmissing_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_pass_Ch_ieta_p2 = iBooker.book2D(
-      "GE11_nPassingProbe_OHmissing_Ch_ieta_p2", "GE11_nPassingProbe_OHmissing_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_fail_Ch_ieta_p2 = iBooker.book2D(
-      "GE11_nFailingProbe_OHmissing_Ch_ieta_p2", "GE11_nFailingProbe_OHmissing_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_pass_Ch_ieta_n1 = iBooker.book2D(
-      "GE11_nPassingProbe_OHmissing_Ch_ieta_n1", "GE11_nPassingProbe_OHmissing_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_fail_Ch_ieta_n1 = iBooker.book2D(
-      "GE11_nFailingProbe_OHmissing_Ch_ieta_n1", "GE11_nFailingProbe_OHmissing_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_pass_Ch_ieta_n2 = iBooker.book2D(
-      "GE11_nPassingProbe_OHmissing_Ch_ieta_n2", "GE11_nPassingProbe_OHmissing_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHmissing_me_GE11_fail_Ch_ieta_n2 = iBooker.book2D(
-      "GE11_nFailingProbe_OHmissing_Ch_ieta_n2", "GE11_nFailingProbe_OHmissing_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
-
-  OHmissing_me_GE11_pass_allCh_1D->setBinLabel(1, "GE-11", 1);
-  OHmissing_me_GE11_pass_allCh_1D->setBinLabel(2, "GE+11", 1);
-  OHmissing_me_GE11_pass_allCh_1D->setAxisTitle("Number of passing probes", 2);
-
-  OHmissing_me_GE11_fail_allCh_1D->setBinLabel(1, "GE-11", 1);
-  OHmissing_me_GE11_fail_allCh_1D->setBinLabel(2, "GE+11", 1);
-  OHmissing_me_GE11_fail_allCh_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_chamber_p1_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_pass_chamber_p1_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_chamber_p1_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_fail_chamber_p1_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_chamber_p2_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_pass_chamber_p2_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_chamber_p2_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_fail_chamber_p2_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_chamber_n1_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_pass_chamber_n1_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_chamber_n1_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_fail_chamber_n1_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_chamber_n2_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_pass_chamber_n2_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_chamber_n2_1D->setAxisTitle("Chamber", 1);
-  OHmissing_me_GEM_fail_chamber_n2_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_pt_1D->setAxisTitle("P_{T}", 1);
-  OHmissing_me_GEM_pass_pt_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_pt_1D->setAxisTitle("P_{T}", 1);
-  OHmissing_me_GEM_fail_pt_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_eta_1D->setAxisTitle("#eta", 1);
-  OHmissing_me_GEM_pass_eta_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_eta_1D->setAxisTitle("#eta", 1);
-  OHmissing_me_GEM_fail_eta_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHmissing_me_GEM_pass_phi_1D->setAxisTitle("#phi", 1);
-  OHmissing_me_GEM_pass_phi_1D->setAxisTitle("Number of passing probes", 2);
-  OHmissing_me_GEM_fail_phi_1D->setAxisTitle("#phi", 1);
-  OHmissing_me_GEM_fail_phi_1D->setAxisTitle("Number of failing probes", 2);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_fail_Ch_ieta_p1->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_fail_Ch_ieta_p1->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_fail_Ch_ieta_p1->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_pass_Ch_ieta_p1->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_pass_Ch_ieta_p1->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_pass_Ch_ieta_p1->setAxisTitle("Number of passing probes", 3);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_fail_Ch_ieta_p2->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_fail_Ch_ieta_p2->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_fail_Ch_ieta_p2->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_pass_Ch_ieta_p2->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_pass_Ch_ieta_p2->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_pass_Ch_ieta_p2->setAxisTitle("Number of passing probes", 3);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_fail_Ch_ieta_n1->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_fail_Ch_ieta_n1->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_fail_Ch_ieta_n1->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_pass_Ch_ieta_n1->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_pass_Ch_ieta_n1->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_pass_Ch_ieta_n1->setAxisTitle("Number of passing probes", 3);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_fail_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_fail_Ch_ieta_n2->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_fail_Ch_ieta_n2->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_fail_Ch_ieta_n2->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHmissing_me_GE11_pass_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHmissing_me_GE11_pass_Ch_ieta_n2->setAxisTitle("#ieta", 1);
-  OHmissing_me_GE11_pass_Ch_ieta_n2->setAxisTitle("Chamber", 2);
-  OHmissing_me_GE11_pass_Ch_ieta_n2->setAxisTitle("Number of passing probes", 3);
-
-  // Bad VFAT Mask + Empty OH Mask + EvtNF
-
-  MonitorElement* OHerror_me_GE11_pass_allCh_1D =
-      iBooker.book1D("GE11_nPassingProbe_OHerror_allCh_1D", "GE11_nPassingProbe_OHerror_allCh_1D", 2, -1.5, 1.5);
-  MonitorElement* OHerror_me_GE11_fail_allCh_1D =
-      iBooker.book1D("GE11_nFailingProbe_OHerror_allCh_1D", "GE11_nFailingProbe_OHerror_allCh_1D", 2, -1.5, 1.5);
-  MonitorElement* OHerror_me_GEM_pass_chamber_p1_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHerror_chamber_p1_1D", "GEM_nPassingProbe_OHerror_chamber_p1_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_fail_chamber_p1_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHerror_chamber_p1_1D", "GEM_nFailingProbe_OHerror_chamber_p1_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_pass_chamber_p2_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHerror_chamber_p2_1D", "GEM_nPassingProbe_OHerror_chamber_p2_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_fail_chamber_p2_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHerror_chamber_p2_1D", "GEM_nFailingProbe_OHerror_chamber_p2_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_pass_chamber_n1_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHerror_chamber_n1_1D", "GEM_nPassingProbe_OHerror_chamber_n1_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_fail_chamber_n1_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHerror_chamber_n1_1D", "GEM_nFailingProbe_OHerror_chamber_n1_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_pass_chamber_n2_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHerror_chamber_n2_1D", "GEM_nPassingProbe_OHerror_chamber_n2_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_fail_chamber_n2_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHerror_chamber_n2_1D", "GEM_nFailingProbe_OHerror_chamber_n2_1D", 36, 1, 37);
-  MonitorElement* OHerror_me_GEM_pass_pt_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHerror_pt_1D", "GEM_nPassingProbe_OHerror_pt_1D", 20, 0, 100);
-  MonitorElement* OHerror_me_GEM_fail_pt_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHerror_pt_1D", "GEM_nFailingProbe_OHerror_pt_1D", 20, 0, 100);
-  MonitorElement* OHerror_me_GEM_pass_eta_1D =
-      iBooker.book1D("GEM_nPassingProbe_OHerror_eta_1D", "GEM_nPassingProbe_OHerror_eta_1D", 24, 0, 2.4);
-  MonitorElement* OHerror_me_GEM_fail_eta_1D =
-      iBooker.book1D("GEM_nFailingProbe_OHerror_eta_1D", "GEM_nFailingProbe_OHerror_eta_1D", 24, 0, 2.4);
-  MonitorElement* OHerror_me_GEM_pass_phi_1D = iBooker.book1D(
-      "GEM_nPassingProbe_OHerror_phi_1D", "GEM_nPassingProbe_OHerror_phi_1D", 20, -TMath::Pi(), TMath::Pi());
-  MonitorElement* OHerror_me_GEM_fail_phi_1D = iBooker.book1D(
-      "GEM_nFailingProbe_OHerror_phi_1D", "GEM_nFailingProbe_OHerror_phi_1D", 20, -TMath::Pi(), TMath::Pi());
-  MonitorElement* OHerror_me_GE11_pass_Ch_ieta_p1 = iBooker.book2D(
-      "GE11_nPassingProbe_OHerror_Ch_ieta_p1", "GE11_nPassingProbe_OHerror_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_fail_Ch_ieta_p1 = iBooker.book2D(
-      "GE11_nFailingProbe_OHerror_Ch_ieta_p1", "GE11_nFailingProbe_OHerror_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_pass_Ch_ieta_p2 = iBooker.book2D(
-      "GE11_nPassingProbe_OHerror_Ch_ieta_p2", "GE11_nPassingProbe_OHerror_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_fail_Ch_ieta_p2 = iBooker.book2D(
-      "GE11_nFailingProbe_OHerror_Ch_ieta_p2", "GE11_nFailingProbe_OHerror_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_pass_Ch_ieta_n1 = iBooker.book2D(
-      "GE11_nPassingProbe_OHerror_Ch_ieta_n1", "GE11_nPassingProbe_OHerror_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_fail_Ch_ieta_n1 = iBooker.book2D(
-      "GE11_nFailingProbe_OHerror_Ch_ieta_n1", "GE11_nFailingProbe_OHerror_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_pass_Ch_ieta_n2 = iBooker.book2D(
-      "GE11_nPassingProbe_OHerror_Ch_ieta_n2", "GE11_nPassingProbe_OHerror_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
-  MonitorElement* OHerror_me_GE11_fail_Ch_ieta_n2 = iBooker.book2D(
-      "GE11_nFailingProbe_OHerror_Ch_ieta_n2", "GE11_nFailingProbe_OHerror_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
-
-  OHerror_me_GE11_pass_allCh_1D->setBinLabel(1, "GE-11", 1);
-  OHerror_me_GE11_pass_allCh_1D->setBinLabel(2, "GE+11", 1);
-  OHerror_me_GE11_pass_allCh_1D->setAxisTitle("Number of passing probes", 2);
-
-  OHerror_me_GE11_fail_allCh_1D->setBinLabel(1, "GE-11", 1);
-  OHerror_me_GE11_fail_allCh_1D->setBinLabel(2, "GE+11", 1);
-  OHerror_me_GE11_fail_allCh_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_chamber_p1_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_pass_chamber_p1_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_chamber_p1_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_fail_chamber_p1_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_chamber_p2_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_pass_chamber_p2_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_chamber_p2_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_fail_chamber_p2_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_chamber_n1_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_pass_chamber_n1_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_chamber_n1_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_fail_chamber_n1_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_chamber_n2_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_pass_chamber_n2_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_chamber_n2_1D->setAxisTitle("Chamber", 1);
-  OHerror_me_GEM_fail_chamber_n2_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_pt_1D->setAxisTitle("P_{T}", 1);
-  OHerror_me_GEM_pass_pt_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_pt_1D->setAxisTitle("P_{T}", 1);
-  OHerror_me_GEM_fail_pt_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_eta_1D->setAxisTitle("#eta", 1);
-  OHerror_me_GEM_pass_eta_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_eta_1D->setAxisTitle("#eta", 1);
-  OHerror_me_GEM_fail_eta_1D->setAxisTitle("Number of failing probes", 2);
-
-  OHerror_me_GEM_pass_phi_1D->setAxisTitle("#phi", 1);
-  OHerror_me_GEM_pass_phi_1D->setAxisTitle("Number of passing probes", 2);
-  OHerror_me_GEM_fail_phi_1D->setAxisTitle("#phi", 1);
-  OHerror_me_GEM_fail_phi_1D->setAxisTitle("Number of failing probes", 2);
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_fail_Ch_ieta_p1->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_fail_Ch_ieta_p1->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_fail_Ch_ieta_p1->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_p1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_pass_Ch_ieta_p1->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_pass_Ch_ieta_p1->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_pass_Ch_ieta_p1->setAxisTitle("Number of passing probes", 3);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_fail_Ch_ieta_p2->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_fail_Ch_ieta_p2->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_fail_Ch_ieta_p2->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_p2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_pass_Ch_ieta_p2->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_pass_Ch_ieta_p2->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_pass_Ch_ieta_p2->setAxisTitle("Number of passing probes", 3);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_fail_Ch_ieta_n1->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_fail_Ch_ieta_n1->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_fail_Ch_ieta_n1->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_n1->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_pass_Ch_ieta_n1->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_pass_Ch_ieta_n1->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_pass_Ch_ieta_n1->setAxisTitle("Number of passing probes", 3);
-  ////
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_fail_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_fail_Ch_ieta_n2->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_fail_Ch_ieta_n2->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_fail_Ch_ieta_n2->setAxisTitle("Number of failing probes", 3);
-
-  for (int i = 1; i < 37; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 2);
-  }
-  for (int i = 1; i < 9; ++i) {
-    OHerror_me_GE11_pass_Ch_ieta_n2->setBinLabel(i, std::to_string(i), 1);
-  }
-  OHerror_me_GE11_pass_Ch_ieta_n2->setAxisTitle("#ieta", 1);
-  OHerror_me_GE11_pass_Ch_ieta_n2->setAxisTitle("Chamber", 2);
-  OHerror_me_GE11_pass_Ch_ieta_n2->setAxisTitle("Number of passing probes", 3);
 
   // Bad VFAT Mask + Empty OH Mask + OHerrorMask
 
@@ -595,21 +249,21 @@ void GEMTnPEfficiencyTask::bookHistograms(DQMStore::IBooker& iBooker,
   MonitorElement* VFATMask_me_GE11_fail_allCh_1D =
       iBooker.book1D("GE11_nFailingProbe_VFATMask_allCh_1D", "GE11_nFailingProbe_VFATMask_allCh_1D", 2, -1.5, 1.5);
   MonitorElement* VFATMask_me_GEM_pass_chamber_p1_1D =
-      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_p1_1D", "GEM_nPassingProbe_VFATMask_chamber_p1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_P-L1_1D", "GEM_nPassingProbe_VFATMask_chamber_P-L1_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_fail_chamber_p1_1D =
-      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_p1_1D", "GEM_nFailingProbe_VFATMask_chamber_p1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_P-L1_1D", "GEM_nFailingProbe_VFATMask_chamber_P-L1_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_pass_chamber_p2_1D =
-      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_p2_1D", "GEM_nPassingProbe_VFATMask_chamber_p2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_P-L2_1D", "GEM_nPassingProbe_VFATMask_chamber_P-L2_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_fail_chamber_p2_1D =
-      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_p2_1D", "GEM_nFailingProbe_VFATMask_chamber_p2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_P-L2_1D", "GEM_nFailingProbe_VFATMask_chamber_P-L2_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_pass_chamber_n1_1D =
-      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_n1_1D", "GEM_nPassingProbe_VFATMask_chamber_n1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_M-L1_1D", "GEM_nPassingProbe_VFATMask_chamber_M-L1_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_fail_chamber_n1_1D =
-      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_n1_1D", "GEM_nFailingProbe_VFATMask_chamber_n1_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_M-L1_1D", "GEM_nFailingProbe_VFATMask_chamber_M-L1_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_pass_chamber_n2_1D =
-      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_n2_1D", "GEM_nPassingProbe_VFATMask_chamber_n2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nPassingProbe_VFATMask_chamber_M-L2_1D", "GEM_nPassingProbe_VFATMask_chamber_M-L2_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_fail_chamber_n2_1D =
-      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_n2_1D", "GEM_nFailingProbe_VFATMask_chamber_n2_1D", 36, 1, 37);
+      iBooker.book1D("GEM_nFailingProbe_VFATMask_chamber_M-L2_1D", "GEM_nFailingProbe_VFATMask_chamber_M-L2_1D", 36, 1, 37);
   MonitorElement* VFATMask_me_GEM_pass_pt_1D =
       iBooker.book1D("GEM_nPassingProbe_VFATMask_pt_1D", "GEM_nPassingProbe_VFATMask_pt_1D", 20, 0, 100);
   MonitorElement* VFATMask_me_GEM_fail_pt_1D =
@@ -623,21 +277,21 @@ void GEMTnPEfficiencyTask::bookHistograms(DQMStore::IBooker& iBooker,
   MonitorElement* VFATMask_me_GEM_fail_phi_1D = iBooker.book1D(
       "GEM_nFailingProbe_VFATMask_phi_1D", "GEM_nFailingProbe_VFATMask_phi_1D", 20, -TMath::Pi(), TMath::Pi());
   MonitorElement* VFATMask_me_GE11_pass_Ch_ieta_p1 = iBooker.book2D(
-      "GE11_nPassingProbe_VFATMask_Ch_ieta_p1", "GE11_nPassingProbe_VFATMask_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
+      "GE11_nPassingProbe_VFATMask_Ch_ieta_P-L1", "GE11_nPassingProbe_VFATMask_Ch_ieta_P-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_fail_Ch_ieta_p1 = iBooker.book2D(
-      "GE11_nFailingProbe_VFATMask_Ch_ieta_p1", "GE11_nFailingProbe_VFATMask_Ch_ieta_p1", 8, 1, 9, 36, 1, 37);
+      "GE11_nFailingProbe_VFATMask_Ch_ieta_P-L1", "GE11_nFailingProbe_VFATMask_Ch_ieta_P-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_pass_Ch_ieta_p2 = iBooker.book2D(
-      "GE11_nPassingProbe_VFATMask_Ch_ieta_p2", "GE11_nPassingProbe_VFATMask_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
+      "GE11_nPassingProbe_VFATMask_Ch_ieta_P-L2", "GE11_nPassingProbe_VFATMask_Ch_ieta_P-L2", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_fail_Ch_ieta_p2 = iBooker.book2D(
-      "GE11_nFailingProbe_VFATMask_Ch_ieta_p2", "GE11_nFailingProbe_VFATMask_Ch_ieta_p2", 8, 1, 9, 36, 1, 37);
+      "GE11_nFailingProbe_VFATMask_Ch_ieta_P-L2", "GE11_nFailingProbe_VFATMask_Ch_ieta_P-L2", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_pass_Ch_ieta_n1 = iBooker.book2D(
-      "GE11_nPassingProbe_VFATMask_Ch_ieta_n1", "GE11_nPassingProbe_VFATMask_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
+      "GE11_nPassingProbe_VFATMask_Ch_ieta_M-L1", "GE11_nPassingProbe_VFATMask_Ch_ieta_M-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_fail_Ch_ieta_n1 = iBooker.book2D(
-      "GE11_nFailingProbe_VFATMask_Ch_ieta_n1", "GE11_nFailingProbe_VFATMask_Ch_ieta_n1", 8, 1, 9, 36, 1, 37);
+      "GE11_nFailingProbe_VFATMask_Ch_ieta_M-L1", "GE11_nFailingProbe_VFATMask_Ch_ieta_M-L1", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_pass_Ch_ieta_n2 = iBooker.book2D(
-      "GE11_nPassingProbe_VFATMask_Ch_ieta_n2", "GE11_nPassingProbe_VFATMask_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
+      "GE11_nPassingProbe_VFATMask_Ch_ieta_M-L2", "GE11_nPassingProbe_VFATMask_Ch_ieta_M-L2", 8, 1, 9, 36, 1, 37);
   MonitorElement* VFATMask_me_GE11_fail_Ch_ieta_n2 = iBooker.book2D(
-      "GE11_nFailingProbe_VFATMask_Ch_ieta_n2", "GE11_nFailingProbe_VFATMask_Ch_ieta_n2", 8, 1, 9, 36, 1, 37);
+      "GE11_nFailingProbe_VFATMask_Ch_ieta_M-L2", "GE11_nFailingProbe_VFATMask_Ch_ieta_M-L2", 8, 1, 9, 36, 1, 37);
 
   VFATMask_me_GE11_pass_allCh_1D->setBinLabel(1, "GE-11", 1);
   VFATMask_me_GE11_pass_allCh_1D->setBinLabel(2, "GE+11", 1);
@@ -1167,131 +821,81 @@ void GEMTnPEfficiencyTask::bookHistograms(DQMStore::IBooker& iBooker,
   m_histos["GE11_nFailingProbe_chamber_1D"] = me_GE11_fail_chamber_1D;
   m_histos["GE21_nPassingProbe_chamber_1D"] = me_GE21_pass_chamber_1D;
   m_histos["GE21_nFailingProbe_chamber_1D"] = me_GE21_fail_chamber_1D;
-  m_histos["GEM_nPassingProbe_chamber_p1_1D"] = me_GEM_pass_chamber_p1_1D;
-  m_histos["GEM_nFailingProbe_chamber_p1_1D"] = me_GEM_fail_chamber_p1_1D;
-  m_histos["GEM_nPassingProbe_chamber_p2_1D"] = me_GEM_pass_chamber_p2_1D;
-  m_histos["GEM_nFailingProbe_chamber_p2_1D"] = me_GEM_fail_chamber_p2_1D;
-  m_histos["GEM_nPassingProbe_chamber_n1_1D"] = me_GEM_pass_chamber_n1_1D;
-  m_histos["GEM_nFailingProbe_chamber_n1_1D"] = me_GEM_fail_chamber_n1_1D;
-  m_histos["GEM_nPassingProbe_chamber_n2_1D"] = me_GEM_pass_chamber_n2_1D;
-  m_histos["GEM_nFailingProbe_chamber_n2_1D"] = me_GEM_fail_chamber_n2_1D;
+  m_histos["GEM_nPassingProbe_chamber_P-L1_1D"] = me_GEM_pass_chamber_p1_1D;
+  m_histos["GEM_nFailingProbe_chamber_P-L1_1D"] = me_GEM_fail_chamber_p1_1D;
+  m_histos["GEM_nPassingProbe_chamber_P-L2_1D"] = me_GEM_pass_chamber_p2_1D;
+  m_histos["GEM_nFailingProbe_chamber_P-L2_1D"] = me_GEM_fail_chamber_p2_1D;
+  m_histos["GEM_nPassingProbe_chamber_M-L1_1D"] = me_GEM_pass_chamber_n1_1D;
+  m_histos["GEM_nFailingProbe_chamber_M-L1_1D"] = me_GEM_fail_chamber_n1_1D;
+  m_histos["GEM_nPassingProbe_chamber_M-L2_1D"] = me_GEM_pass_chamber_n2_1D;
+  m_histos["GEM_nFailingProbe_chamber_M-L2_1D"] = me_GEM_fail_chamber_n2_1D;
   m_histos["GEM_nPassingProbe_pt_1D"] = me_GEM_pass_pt_1D;
   m_histos["GEM_nFailingProbe_pt_1D"] = me_GEM_fail_pt_1D;
   m_histos["GEM_nPassingProbe_eta_1D"] = me_GEM_pass_eta_1D;
   m_histos["GEM_nFailingProbe_eta_1D"] = me_GEM_fail_eta_1D;
   m_histos["GEM_nPassingProbe_phi_1D"] = me_GEM_pass_phi_1D;
   m_histos["GEM_nFailingProbe_phi_1D"] = me_GEM_fail_phi_1D;
-  m_histos["GEM_nPassingProbe_pt_p1_1D"] = me_GEM_pass_pt_p1_1D;
-  m_histos["GEM_nFailingProbe_pt_p1_1D"] = me_GEM_fail_pt_p1_1D;
-  m_histos["GEM_nPassingProbe_eta_p1_1D"] = me_GEM_pass_eta_p1_1D;
-  m_histos["GEM_nFailingProbe_eta_p1_1D"] = me_GEM_fail_eta_p1_1D;
-  m_histos["GEM_nPassingProbe_phi_p1_1D"] = me_GEM_pass_phi_p1_1D;
-  m_histos["GEM_nFailingProbe_phi_p1_1D"] = me_GEM_fail_phi_p1_1D;
-  m_histos["GEM_nPassingProbe_pt_p2_1D"] = me_GEM_pass_pt_p2_1D;
-  m_histos["GEM_nFailingProbe_pt_p2_1D"] = me_GEM_fail_pt_p2_1D;
-  m_histos["GEM_nPassingProbe_eta_p2_1D"] = me_GEM_pass_eta_p2_1D;
-  m_histos["GEM_nFailingProbe_eta_p2_1D"] = me_GEM_fail_eta_p2_1D;
-  m_histos["GEM_nPassingProbe_phi_p2_1D"] = me_GEM_pass_phi_p2_1D;
-  m_histos["GEM_nFailingProbe_phi_p2_1D"] = me_GEM_fail_phi_p2_1D;
-  m_histos["GEM_nPassingProbe_pt_n1_1D"] = me_GEM_pass_pt_n1_1D;
-  m_histos["GEM_nFailingProbe_pt_n1_1D"] = me_GEM_fail_pt_n1_1D;
-  m_histos["GEM_nPassingProbe_eta_n1_1D"] = me_GEM_pass_eta_n1_1D;
-  m_histos["GEM_nFailingProbe_eta_n1_1D"] = me_GEM_fail_eta_n1_1D;
-  m_histos["GEM_nPassingProbe_phi_n1_1D"] = me_GEM_pass_phi_n1_1D;
-  m_histos["GEM_nFailingProbe_phi_n1_1D"] = me_GEM_fail_phi_n1_1D;
-  m_histos["GEM_nPassingProbe_pt_n2_1D"] = me_GEM_pass_pt_n2_1D;
-  m_histos["GEM_nFailingProbe_pt_n2_1D"] = me_GEM_fail_pt_n2_1D;
-  m_histos["GEM_nPassingProbe_eta_n2_1D"] = me_GEM_pass_eta_n2_1D;
-  m_histos["GEM_nFailingProbe_eta_n2_1D"] = me_GEM_fail_eta_n2_1D;
-  m_histos["GEM_nPassingProbe_phi_n2_1D"] = me_GEM_pass_phi_n2_1D;
-  m_histos["GEM_nFailingProbe_phi_n2_1D"] = me_GEM_fail_phi_n2_1D;
+  m_histos["GEM_nPassingProbe_pt_P-L1_1D"] = me_GEM_pass_pt_p1_1D;
+  m_histos["GEM_nFailingProbe_pt_P-L1_1D"] = me_GEM_fail_pt_p1_1D;
+  m_histos["GEM_nPassingProbe_eta_P-L1_1D"] = me_GEM_pass_eta_p1_1D;
+  m_histos["GEM_nFailingProbe_eta_P-L1_1D"] = me_GEM_fail_eta_p1_1D;
+  m_histos["GEM_nPassingProbe_phi_P-L1_1D"] = me_GEM_pass_phi_p1_1D;
+  m_histos["GEM_nFailingProbe_phi_P-L1_1D"] = me_GEM_fail_phi_p1_1D;
+  m_histos["GEM_nPassingProbe_pt_P-L2_1D"] = me_GEM_pass_pt_p2_1D;
+  m_histos["GEM_nFailingProbe_pt_P-L2_1D"] = me_GEM_fail_pt_p2_1D;
+  m_histos["GEM_nPassingProbe_eta_P-L2_1D"] = me_GEM_pass_eta_p2_1D;
+  m_histos["GEM_nFailingProbe_eta_P-L2_1D"] = me_GEM_fail_eta_p2_1D;
+  m_histos["GEM_nPassingProbe_phi_P-L2_1D"] = me_GEM_pass_phi_p2_1D;
+  m_histos["GEM_nFailingProbe_phi_P-L2_1D"] = me_GEM_fail_phi_p2_1D;
+  m_histos["GEM_nPassingProbe_pt_M-L1_1D"] = me_GEM_pass_pt_n1_1D;
+  m_histos["GEM_nFailingProbe_pt_M-L1_1D"] = me_GEM_fail_pt_n1_1D;
+  m_histos["GEM_nPassingProbe_eta_M-L1_1D"] = me_GEM_pass_eta_n1_1D;
+  m_histos["GEM_nFailingProbe_eta_M-L1_1D"] = me_GEM_fail_eta_n1_1D;
+  m_histos["GEM_nPassingProbe_phi_M-L1_1D"] = me_GEM_pass_phi_n1_1D;
+  m_histos["GEM_nFailingProbe_phi_M-L1_1D"] = me_GEM_fail_phi_n1_1D;
+  m_histos["GEM_nPassingProbe_pt_M-L2_1D"] = me_GEM_pass_pt_n2_1D;
+  m_histos["GEM_nFailingProbe_pt_M-L2_1D"] = me_GEM_fail_pt_n2_1D;
+  m_histos["GEM_nPassingProbe_eta_M-L2_1D"] = me_GEM_pass_eta_n2_1D;
+  m_histos["GEM_nFailingProbe_eta_M-L2_1D"] = me_GEM_fail_eta_n2_1D;
+  m_histos["GEM_nPassingProbe_phi_M-L2_1D"] = me_GEM_pass_phi_n2_1D;
+  m_histos["GEM_nFailingProbe_phi_M-L2_1D"] = me_GEM_fail_phi_n2_1D;
   m_histos["ME0_nPassingProbe_chamber_1D"] = me_ME0_pass_chamber_1D;
   m_histos["ME0_nFailingProbe_chamber_1D"] = me_ME0_fail_chamber_1D;
   m_histos["GEM_nPassingProbe_Ch_region_layer_phase2"] = me_GEM_pass_Ch_region_layer_phase2;
   m_histos["GEM_nFailingProbe_Ch_region_layer_phase2"] = me_GEM_fail_Ch_region_layer_phase2;
-  m_histos["GE11_nPassingProbe_Ch_ieta_p1"] = me_GE11_pass_Ch_ieta_p1;
-  m_histos["GE11_nFailingProbe_Ch_ieta_p1"] = me_GE11_fail_Ch_ieta_p1;
-  m_histos["GE11_nPassingProbe_Ch_ieta_p2"] = me_GE11_pass_Ch_ieta_p2;
-  m_histos["GE11_nFailingProbe_Ch_ieta_p2"] = me_GE11_fail_Ch_ieta_p2;
-  m_histos["GE11_nPassingProbe_Ch_ieta_n1"] = me_GE11_pass_Ch_ieta_n1;
-  m_histos["GE11_nFailingProbe_Ch_ieta_n1"] = me_GE11_fail_Ch_ieta_n1;
-  m_histos["GE11_nPassingProbe_Ch_ieta_n2"] = me_GE11_pass_Ch_ieta_n2;
-  m_histos["GE11_nFailingProbe_Ch_ieta_n2"] = me_GE11_fail_Ch_ieta_n2;
-
-  m_histos["GE11_nPassingProbe_OHmissing_allCh_1D"] = OHmissing_me_GE11_pass_allCh_1D;
-  m_histos["GE11_nFailingProbe_OHmissing_allCh_1D"] = OHmissing_me_GE11_fail_allCh_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_chamber_p1_1D"] = OHmissing_me_GEM_pass_chamber_p1_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_chamber_p1_1D"] = OHmissing_me_GEM_fail_chamber_p1_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_chamber_p2_1D"] = OHmissing_me_GEM_pass_chamber_p2_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_chamber_p2_1D"] = OHmissing_me_GEM_fail_chamber_p2_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_chamber_n1_1D"] = OHmissing_me_GEM_pass_chamber_n1_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_chamber_n1_1D"] = OHmissing_me_GEM_fail_chamber_n1_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_chamber_n2_1D"] = OHmissing_me_GEM_pass_chamber_n2_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_chamber_n2_1D"] = OHmissing_me_GEM_fail_chamber_n2_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_pt_1D"] = OHmissing_me_GEM_pass_pt_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_pt_1D"] = OHmissing_me_GEM_fail_pt_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_eta_1D"] = OHmissing_me_GEM_pass_eta_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_eta_1D"] = OHmissing_me_GEM_fail_eta_1D;
-  m_histos["GEM_nPassingProbe_OHmissing_phi_1D"] = OHmissing_me_GEM_pass_phi_1D;
-  m_histos["GEM_nFailingProbe_OHmissing_phi_1D"] = OHmissing_me_GEM_fail_phi_1D;
-  m_histos["GE11_nPassingProbe_OHmissing_Ch_ieta_p1"] = OHmissing_me_GE11_pass_Ch_ieta_p1;
-  m_histos["GE11_nFailingProbe_OHmissing_Ch_ieta_p1"] = OHmissing_me_GE11_fail_Ch_ieta_p1;
-  m_histos["GE11_nPassingProbe_OHmissing_Ch_ieta_p2"] = OHmissing_me_GE11_pass_Ch_ieta_p2;
-  m_histos["GE11_nFailingProbe_OHmissing_Ch_ieta_p2"] = OHmissing_me_GE11_fail_Ch_ieta_p2;
-  m_histos["GE11_nPassingProbe_OHmissing_Ch_ieta_n1"] = OHmissing_me_GE11_pass_Ch_ieta_n1;
-  m_histos["GE11_nFailingProbe_OHmissing_Ch_ieta_n1"] = OHmissing_me_GE11_fail_Ch_ieta_n1;
-  m_histos["GE11_nPassingProbe_OHmissing_Ch_ieta_n2"] = OHmissing_me_GE11_pass_Ch_ieta_n2;
-  m_histos["GE11_nFailingProbe_OHmissing_Ch_ieta_n2"] = OHmissing_me_GE11_fail_Ch_ieta_n2;
-
-  m_histos["GE11_nPassingProbe_OHerror_allCh_1D"] = OHerror_me_GE11_pass_allCh_1D;
-  m_histos["GE11_nFailingProbe_OHerror_allCh_1D"] = OHerror_me_GE11_fail_allCh_1D;
-  m_histos["GEM_nPassingProbe_OHerror_chamber_p1_1D"] = OHerror_me_GEM_pass_chamber_p1_1D;
-  m_histos["GEM_nFailingProbe_OHerror_chamber_p1_1D"] = OHerror_me_GEM_fail_chamber_p1_1D;
-  m_histos["GEM_nPassingProbe_OHerror_chamber_p2_1D"] = OHerror_me_GEM_pass_chamber_p2_1D;
-  m_histos["GEM_nFailingProbe_OHerror_chamber_p2_1D"] = OHerror_me_GEM_fail_chamber_p2_1D;
-  m_histos["GEM_nPassingProbe_OHerror_chamber_n1_1D"] = OHerror_me_GEM_pass_chamber_n1_1D;
-  m_histos["GEM_nFailingProbe_OHerror_chamber_n1_1D"] = OHerror_me_GEM_fail_chamber_n1_1D;
-  m_histos["GEM_nPassingProbe_OHerror_chamber_n2_1D"] = OHerror_me_GEM_pass_chamber_n2_1D;
-  m_histos["GEM_nFailingProbe_OHerror_chamber_n2_1D"] = OHerror_me_GEM_fail_chamber_n2_1D;
-  m_histos["GEM_nPassingProbe_OHerror_pt_1D"] = OHerror_me_GEM_pass_pt_1D;
-  m_histos["GEM_nFailingProbe_OHerror_pt_1D"] = OHerror_me_GEM_fail_pt_1D;
-  m_histos["GEM_nPassingProbe_OHerror_eta_1D"] = OHerror_me_GEM_pass_eta_1D;
-  m_histos["GEM_nFailingProbe_OHerror_eta_1D"] = OHerror_me_GEM_fail_eta_1D;
-  m_histos["GEM_nPassingProbe_OHerror_phi_1D"] = OHerror_me_GEM_pass_phi_1D;
-  m_histos["GEM_nFailingProbe_OHerror_phi_1D"] = OHerror_me_GEM_fail_phi_1D;
-  m_histos["GE11_nPassingProbe_OHerror_Ch_ieta_p1"] = OHerror_me_GE11_pass_Ch_ieta_p1;
-  m_histos["GE11_nFailingProbe_OHerror_Ch_ieta_p1"] = OHerror_me_GE11_fail_Ch_ieta_p1;
-  m_histos["GE11_nPassingProbe_OHerror_Ch_ieta_p2"] = OHerror_me_GE11_pass_Ch_ieta_p2;
-  m_histos["GE11_nFailingProbe_OHerror_Ch_ieta_p2"] = OHerror_me_GE11_fail_Ch_ieta_p2;
-  m_histos["GE11_nPassingProbe_OHerror_Ch_ieta_n1"] = OHerror_me_GE11_pass_Ch_ieta_n1;
-  m_histos["GE11_nFailingProbe_OHerror_Ch_ieta_n1"] = OHerror_me_GE11_fail_Ch_ieta_n1;
-  m_histos["GE11_nPassingProbe_OHerror_Ch_ieta_n2"] = OHerror_me_GE11_pass_Ch_ieta_n2;
-  m_histos["GE11_nFailingProbe_OHerror_Ch_ieta_n2"] = OHerror_me_GE11_fail_Ch_ieta_n2;
+  m_histos["GE11_nPassingProbe_Ch_ieta_P-L1"] = me_GE11_pass_Ch_ieta_p1;
+  m_histos["GE11_nFailingProbe_Ch_ieta_P-L1"] = me_GE11_fail_Ch_ieta_p1;
+  m_histos["GE11_nPassingProbe_Ch_ieta_P-L2"] = me_GE11_pass_Ch_ieta_p2;
+  m_histos["GE11_nFailingProbe_Ch_ieta_P-L2"] = me_GE11_fail_Ch_ieta_p2;
+  m_histos["GE11_nPassingProbe_Ch_ieta_M-L1"] = me_GE11_pass_Ch_ieta_n1;
+  m_histos["GE11_nFailingProbe_Ch_ieta_M-L1"] = me_GE11_fail_Ch_ieta_n1;
+  m_histos["GE11_nPassingProbe_Ch_ieta_M-L2"] = me_GE11_pass_Ch_ieta_n2;
+  m_histos["GE11_nFailingProbe_Ch_ieta_M-L2"] = me_GE11_fail_Ch_ieta_n2;
 
   m_histos["GE11_nPassingProbe_VFATMask_allCh_1D"] = VFATMask_me_GE11_pass_allCh_1D;
   m_histos["GE11_nFailingProbe_VFATMask_allCh_1D"] = VFATMask_me_GE11_fail_allCh_1D;
-  m_histos["GEM_nPassingProbe_VFATMask_chamber_p1_1D"] = VFATMask_me_GEM_pass_chamber_p1_1D;
-  m_histos["GEM_nFailingProbe_VFATMask_chamber_p1_1D"] = VFATMask_me_GEM_fail_chamber_p1_1D;
-  m_histos["GEM_nPassingProbe_VFATMask_chamber_p2_1D"] = VFATMask_me_GEM_pass_chamber_p2_1D;
-  m_histos["GEM_nFailingProbe_VFATMask_chamber_p2_1D"] = VFATMask_me_GEM_fail_chamber_p2_1D;
-  m_histos["GEM_nPassingProbe_VFATMask_chamber_n1_1D"] = VFATMask_me_GEM_pass_chamber_n1_1D;
-  m_histos["GEM_nFailingProbe_VFATMask_chamber_n1_1D"] = VFATMask_me_GEM_fail_chamber_n1_1D;
-  m_histos["GEM_nPassingProbe_VFATMask_chamber_n2_1D"] = VFATMask_me_GEM_pass_chamber_n2_1D;
-  m_histos["GEM_nFailingProbe_VFATMask_chamber_n2_1D"] = VFATMask_me_GEM_fail_chamber_n2_1D;
+  m_histos["GEM_nPassingProbe_VFATMask_chamber_P-L1_1D"] = VFATMask_me_GEM_pass_chamber_p1_1D;
+  m_histos["GEM_nFailingProbe_VFATMask_chamber_P-L1_1D"] = VFATMask_me_GEM_fail_chamber_p1_1D;
+  m_histos["GEM_nPassingProbe_VFATMask_chamber_P-L2_1D"] = VFATMask_me_GEM_pass_chamber_p2_1D;
+  m_histos["GEM_nFailingProbe_VFATMask_chamber_P-L2_1D"] = VFATMask_me_GEM_fail_chamber_p2_1D;
+  m_histos["GEM_nPassingProbe_VFATMask_chamber_M-L1_1D"] = VFATMask_me_GEM_pass_chamber_n1_1D;
+  m_histos["GEM_nFailingProbe_VFATMask_chamber_M-L1_1D"] = VFATMask_me_GEM_fail_chamber_n1_1D;
+  m_histos["GEM_nPassingProbe_VFATMask_chamber_M-L2_1D"] = VFATMask_me_GEM_pass_chamber_n2_1D;
+  m_histos["GEM_nFailingProbe_VFATMask_chamber_M-L2_1D"] = VFATMask_me_GEM_fail_chamber_n2_1D;
   m_histos["GEM_nPassingProbe_VFATMask_pt_1D"] = VFATMask_me_GEM_pass_pt_1D;
   m_histos["GEM_nFailingProbe_VFATMask_pt_1D"] = VFATMask_me_GEM_fail_pt_1D;
   m_histos["GEM_nPassingProbe_VFATMask_eta_1D"] = VFATMask_me_GEM_pass_eta_1D;
   m_histos["GEM_nFailingProbe_VFATMask_eta_1D"] = VFATMask_me_GEM_fail_eta_1D;
   m_histos["GEM_nPassingProbe_VFATMask_phi_1D"] = VFATMask_me_GEM_pass_phi_1D;
   m_histos["GEM_nFailingProbe_VFATMask_phi_1D"] = VFATMask_me_GEM_fail_phi_1D;
-  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_p1"] = VFATMask_me_GE11_pass_Ch_ieta_p1;
-  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_p1"] = VFATMask_me_GE11_fail_Ch_ieta_p1;
-  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_p2"] = VFATMask_me_GE11_pass_Ch_ieta_p2;
-  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_p2"] = VFATMask_me_GE11_fail_Ch_ieta_p2;
-  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_n1"] = VFATMask_me_GE11_pass_Ch_ieta_n1;
-  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_n1"] = VFATMask_me_GE11_fail_Ch_ieta_n1;
-  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_n2"] = VFATMask_me_GE11_pass_Ch_ieta_n2;
-  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_n2"] = VFATMask_me_GE11_fail_Ch_ieta_n2;
+  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_P-L1"] = VFATMask_me_GE11_pass_Ch_ieta_p1;
+  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_P-L1"] = VFATMask_me_GE11_fail_Ch_ieta_p1;
+  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_P-L2"] = VFATMask_me_GE11_pass_Ch_ieta_p2;
+  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_P-L2"] = VFATMask_me_GE11_fail_Ch_ieta_p2;
+  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_M-L1"] = VFATMask_me_GE11_pass_Ch_ieta_n1;
+  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_M-L1"] = VFATMask_me_GE11_fail_Ch_ieta_n1;
+  m_histos["GE11_nPassingProbe_VFATMask_Ch_ieta_M-L2"] = VFATMask_me_GE11_pass_Ch_ieta_n2;
+  m_histos["GE11_nFailingProbe_VFATMask_Ch_ieta_M-L2"] = VFATMask_me_GE11_fail_Ch_ieta_n2;
 
   std::string baseDir_ = topFolder() + "/detailed/";
   iBooker.setCurrentFolder(baseDir_);
@@ -1443,15 +1047,6 @@ bool GEMTnPEfficiencyTask::checkBounds(const GeomDet* geomDet,
     return true;
   }
   return false;
-}
-
-bool GEMTnPEfficiencyTask::checkEta(const reco::MuonGEMHitMatch gemHit,
-                                    const int ieta,
-                                    const GEMDetId& gem_id) {
-  if (ieta != gemHit.ieta) {
-    return false;
-  }
-  return true;
 }
 
 void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetup& context) {
@@ -1620,7 +1215,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
 
             for (auto& gemHit : chambMatch.gemHitMatches) {
               float dx = std::abs(chambMatch.x - gemHit.x);
-              if (dx < smallestDx && checkEta(gemHit, ieta, chId)) {
+              if (dx < smallestDx) {
                 smallestDx = dx;
                 closest_matchedHit = gemHit;
                 matched_GEMHit_x = gemHit.x;
@@ -1809,9 +1404,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         m_histos.find("GE11_nPassingProbe_Ch_phi")->second->Fill(GEM_phi, GEM_chamber);
         m_histos.find("GE11_nPassingProbe_allCh_1D")->second->Fill(GEM_region);
         if (~GEM_warning & 1) {
-          m_histos.find("GE11_nPassingProbe_OHmissing_allCh_1D")->second->Fill(GEM_region);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GE11_nPassingProbe_OHerror_allCh_1D")->second->Fill(GEM_region);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GE11_nPassingProbe_VFATMask_allCh_1D")->second->Fill(GEM_region);
             }
@@ -1838,119 +1431,101 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
 
         if (GEM_region == 1 && GEM_lay == 1) {
-          m_histos.find("GEM_nPassingProbe_chamber_p1_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nPassingProbe_chamber_P-L1_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nPassingProbe_OHmissing_chamber_p1_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nPassingProbe_OHerror_chamber_p1_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_p1_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_P-L1_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nPassingProbe_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nPassingProbe_Ch_ieta_P-L1")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nPassingProbe_OHmissing_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nPassingProbe_OHerror_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_P-L1")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
           m_histos.find("GEM_nPassingProbe_Ch_region_GE1")->second->Fill(2, GEM_chamber);
-          m_histos.find("GEM_nPassingProbe_pt_p1_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nPassingProbe_eta_p1_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nPassingProbe_phi_p1_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nPassingProbe_pt_P-L1_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nPassingProbe_eta_P-L1_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nPassingProbe_phi_P-L1_1D")->second->Fill(GEM_phi);
         } else if (GEM_region == 1 && GEM_lay == 2) {
-          m_histos.find("GEM_nPassingProbe_chamber_p2_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nPassingProbe_chamber_P-L2_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nPassingProbe_OHmissing_chamber_p2_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nPassingProbe_OHerror_chamber_p2_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_p2_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_P-L2_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nPassingProbe_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nPassingProbe_Ch_ieta_P-L2")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nPassingProbe_OHmissing_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nPassingProbe_OHerror_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_P-L2")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
           m_histos.find("GEM_nPassingProbe_Ch_region_GE1")->second->Fill(3, GEM_chamber);
-          m_histos.find("GEM_nPassingProbe_pt_p2_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nPassingProbe_eta_p2_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nPassingProbe_phi_p2_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nPassingProbe_pt_P-L2_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nPassingProbe_eta_P-L2_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nPassingProbe_phi_P-L2_1D")->second->Fill(GEM_phi);
         } else if (GEM_region == -1 && GEM_lay == 1) {
-          m_histos.find("GEM_nPassingProbe_chamber_n1_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nPassingProbe_chamber_M-L1_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nPassingProbe_OHmissing_chamber_n1_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nPassingProbe_OHerror_chamber_n1_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_n1_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_M-L1_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nPassingProbe_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nPassingProbe_Ch_ieta_M-L1")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nPassingProbe_OHmissing_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nPassingProbe_OHerror_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_M-L1")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
           m_histos.find("GEM_nPassingProbe_Ch_region_GE1")->second->Fill(1, GEM_chamber);
-          m_histos.find("GEM_nPassingProbe_pt_n1_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nPassingProbe_eta_n1_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nPassingProbe_phi_n1_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nPassingProbe_pt_M-L1_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nPassingProbe_eta_M-L1_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nPassingProbe_phi_M-L1_1D")->second->Fill(GEM_phi);
         } else if (GEM_region == -1 && GEM_lay == 2) {
-          m_histos.find("GEM_nPassingProbe_chamber_n2_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nPassingProbe_chamber_M-L2_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nPassingProbe_OHmissing_chamber_n2_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nPassingProbe_OHerror_chamber_n2_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_n2_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nPassingProbe_VFATMask_chamber_M-L2_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nPassingProbe_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nPassingProbe_Ch_ieta_M-L2")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nPassingProbe_OHmissing_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nPassingProbe_OHerror_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nPassingProbe_VFATMask_Ch_ieta_M-L2")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
           m_histos.find("GEM_nPassingProbe_Ch_region_GE1")->second->Fill(0, GEM_chamber);
-          m_histos.find("GEM_nPassingProbe_pt_n2_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nPassingProbe_eta_n2_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nPassingProbe_phi_n2_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nPassingProbe_pt_M-L2_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nPassingProbe_eta_M-L2_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nPassingProbe_phi_M-L2_1D")->second->Fill(GEM_phi);
         }
         m_histos.find("GEM_nPassingProbe_pt_1D")->second->Fill(GEM_pt);
         if (~GEM_warning & 1) {
-          m_histos.find("GEM_nPassingProbe_OHmissing_pt_1D")->second->Fill(GEM_pt);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GEM_nPassingProbe_OHerror_pt_1D")->second->Fill(GEM_pt);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GEM_nPassingProbe_VFATMask_pt_1D")->second->Fill(GEM_pt);
             }
@@ -1958,9 +1533,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
         m_histos.find("GEM_nPassingProbe_eta_1D")->second->Fill(abs(GEM_eta));
         if (~GEM_warning & 1) {
-          m_histos.find("GEM_nPassingProbe_OHmissing_eta_1D")->second->Fill(GEM_eta);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GEM_nPassingProbe_OHerror_eta_1D")->second->Fill(GEM_eta);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GEM_nPassingProbe_VFATMask_eta_1D")->second->Fill(GEM_eta);
             }
@@ -1968,9 +1541,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
         m_histos.find("GEM_nPassingProbe_phi_1D")->second->Fill(GEM_phi);
         if (~GEM_warning & 1) {
-          m_histos.find("GEM_nPassingProbe_OHmissing_phi_1D")->second->Fill(GEM_phi);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GEM_nPassingProbe_OHerror_phi_1D")->second->Fill(GEM_phi);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GEM_nPassingProbe_VFATMask_phi_1D")->second->Fill(GEM_phi);
             }
@@ -1982,9 +1553,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         m_histos.find("GE11_nFailingProbe_Ch_phi")->second->Fill(GEM_phi, GEM_chamber);
         m_histos.find("GE11_nFailingProbe_allCh_1D")->second->Fill(GEM_region);
         if (~GEM_warning & 1) {
-          m_histos.find("GE11_nFailingProbe_OHmissing_allCh_1D")->second->Fill(GEM_region);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GE11_nFailingProbe_OHerror_allCh_1D")->second->Fill(GEM_region);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GE11_nFailingProbe_VFATMask_allCh_1D")->second->Fill(GEM_region);
             }
@@ -2018,109 +1587,93 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
         //
         if (GEM_region == 1 && GEM_lay == 1) {
-          m_histos.find("GEM_nFailingProbe_chamber_p1_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nFailingProbe_chamber_P-L1_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nFailingProbe_OHmissing_chamber_p1_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nFailingProbe_OHerror_chamber_p1_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_p1_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_P-L1_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           m_histos.find("GEM_nFailingProbe_Ch_region_GE1")->second->Fill(2, GEM_chamber);
-          m_histos.find("GEM_nFailingProbe_pt_p1_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nFailingProbe_eta_p1_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nFailingProbe_phi_p1_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nFailingProbe_pt_P-L1_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nFailingProbe_eta_P-L1_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nFailingProbe_phi_P-L1_1D")->second->Fill(GEM_phi);
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nFailingProbe_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nFailingProbe_Ch_ieta_P-L1")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nFailingProbe_OHmissing_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nFailingProbe_OHerror_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_p1")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_P-L1")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
         } else if (GEM_region == 1 && GEM_lay == 2) {
-          m_histos.find("GEM_nFailingProbe_chamber_p2_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nFailingProbe_chamber_P-L2_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nFailingProbe_OHmissing_chamber_p2_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nFailingProbe_OHerror_chamber_p2_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_p2_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_P-L2_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           m_histos.find("GEM_nFailingProbe_Ch_region_GE1")->second->Fill(3, GEM_chamber);
-          m_histos.find("GEM_nFailingProbe_pt_p2_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nFailingProbe_eta_p2_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nFailingProbe_phi_p2_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nFailingProbe_pt_P-L2_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nFailingProbe_eta_P-L2_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nFailingProbe_phi_P-L2_1D")->second->Fill(GEM_phi);
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nFailingProbe_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nFailingProbe_Ch_ieta_P-L2")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nFailingProbe_OHmissing_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nFailingProbe_OHerror_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_p2")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_P-L2")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
         } else if (GEM_region == -1 && GEM_lay == 1) {
-          m_histos.find("GEM_nFailingProbe_chamber_n1_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nFailingProbe_chamber_M-L1_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nFailingProbe_OHmissing_chamber_n1_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nFailingProbe_OHerror_chamber_n1_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_n1_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_M-L1_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           m_histos.find("GEM_nFailingProbe_Ch_region_GE1")->second->Fill(1, GEM_chamber);
-          m_histos.find("GEM_nFailingProbe_pt_n1_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nFailingProbe_eta_n1_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nFailingProbe_phi_n1_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nFailingProbe_pt_M-L1_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nFailingProbe_eta_M-L1_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nFailingProbe_phi_M-L1_1D")->second->Fill(GEM_phi);
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nFailingProbe_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nFailingProbe_Ch_ieta_M-L1")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nFailingProbe_OHmissing_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nFailingProbe_OHerror_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_n1")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_M-L1")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
           }
         } else if (GEM_region == -1 && GEM_lay == 2) {
-          m_histos.find("GEM_nFailingProbe_chamber_n2_1D")->second->Fill(GEM_chamber);
+          m_histos.find("GEM_nFailingProbe_chamber_M-L2_1D")->second->Fill(GEM_chamber);
           if (~GEM_warning & 1) {
-            m_histos.find("GEM_nFailingProbe_OHmissing_chamber_n2_1D")->second->Fill(GEM_chamber);
             if (~GEM_warning >> 1 & 1) {
-              m_histos.find("GEM_nFailingProbe_OHerror_chamber_n2_1D")->second->Fill(GEM_chamber);
               if (~GEM_warning >> 2 & 1) {
-                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_n2_1D")->second->Fill(GEM_chamber);
+                m_histos.find("GEM_nFailingProbe_VFATMask_chamber_M-L2_1D")->second->Fill(GEM_chamber);
               }
             }
           }
           m_histos.find("GEM_nFailingProbe_Ch_region_GE1")->second->Fill(0, GEM_chamber);
-          m_histos.find("GEM_nFailingProbe_pt_n2_1D")->second->Fill(GEM_pt);
-          m_histos.find("GEM_nFailingProbe_eta_n2_1D")->second->Fill(abs(GEM_eta));
-          m_histos.find("GEM_nFailingProbe_phi_n2_1D")->second->Fill(GEM_phi);
+          m_histos.find("GEM_nFailingProbe_pt_M-L2_1D")->second->Fill(GEM_pt);
+          m_histos.find("GEM_nFailingProbe_eta_M-L2_1D")->second->Fill(abs(GEM_eta));
+          m_histos.find("GEM_nFailingProbe_phi_M-L2_1D")->second->Fill(GEM_phi);
           if (GEM_sta == 1) {
-            m_histos.find("GE11_nFailingProbe_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
+            m_histos.find("GE11_nFailingProbe_Ch_ieta_M-L2")->second->Fill(GEM_ieta, GEM_chamber);
             if (~GEM_warning & 1) {
-              m_histos.find("GE11_nFailingProbe_OHmissing_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
               if (~GEM_warning >> 1 & 1) {
-                m_histos.find("GE11_nFailingProbe_OHerror_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
                 if (~GEM_warning >> 2 & 1) {
-                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_n2")->second->Fill(GEM_ieta, GEM_chamber);
+                  m_histos.find("GE11_nFailingProbe_VFATMask_Ch_ieta_M-L2")->second->Fill(GEM_ieta, GEM_chamber);
                 }
               }
             }
@@ -2128,9 +1681,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
         m_histos.find("GEM_nFailingProbe_pt_1D")->second->Fill(GEM_pt);
         if (~GEM_warning & 1) {
-          m_histos.find("GEM_nFailingProbe_OHmissing_pt_1D")->second->Fill(GEM_pt);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GEM_nFailingProbe_OHerror_pt_1D")->second->Fill(GEM_pt);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GEM_nFailingProbe_VFATMask_pt_1D")->second->Fill(GEM_pt);
             }
@@ -2138,9 +1689,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
         m_histos.find("GEM_nFailingProbe_eta_1D")->second->Fill(abs(GEM_eta));
         if (~GEM_warning & 1) {
-          m_histos.find("GEM_nFailingProbe_OHmissing_eta_1D")->second->Fill(GEM_eta);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GEM_nFailingProbe_OHerror_eta_1D")->second->Fill(GEM_eta);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GEM_nFailingProbe_VFATMask_eta_1D")->second->Fill(GEM_eta);
             }
@@ -2148,9 +1697,7 @@ void GEMTnPEfficiencyTask::analyze(const edm::Event& event, const edm::EventSetu
         }
         m_histos.find("GEM_nFailingProbe_phi_1D")->second->Fill(GEM_phi);
         if (~GEM_warning & 1) {
-          m_histos.find("GEM_nFailingProbe_OHmissing_phi_1D")->second->Fill(GEM_phi);
           if (~GEM_warning >> 1 & 1) {
-            m_histos.find("GEM_nFailingProbe_OHerror_phi_1D")->second->Fill(GEM_phi);
             if (~GEM_warning >> 2 & 1) {
               m_histos.find("GEM_nFailingProbe_VFATMask_phi_1D")->second->Fill(GEM_phi);
             }
